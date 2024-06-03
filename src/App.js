@@ -26,7 +26,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className="App">
         {!this.state.isAuthenticated ? (
           <form onSubmit={this.handleSubmit}>
             <label>
@@ -40,16 +40,18 @@ class App extends Component {
             <button type="submit">Submit</button>
           </form>
         ) : (
-          <Iframe
-            url="https://cdn.jwplayer.com/players/HXtdRpnG-PzqYXf16.html"
-            width="450px"
-            height="450px"
-            id="myId"
-            className="myClassname"
-            display="initial"
-            position="relative"
-            allowFullScreen
-          />
+          <div className="iframe-container">
+            <Iframe
+              url="https://cdn.jwplayer.com/players/HXtdRpnG-PzqYXf16.html"
+              width="100%"
+              height="100%"
+              id="myId"
+              className="myClassname"
+              display="initial"
+              position="relative"
+              allowFullScreen
+            />
+          </div>
         )}
       </div>
     );
