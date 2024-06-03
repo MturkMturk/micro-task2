@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/micro-tas2/static/css/main.84eb8f4a.css",
+    "main.js": "/micro-tas2/static/js/main.732ec957.js",
+    "static/js/453.4c4fe0f6.chunk.js": "/micro-tas2/static/js/453.4c4fe0f6.chunk.js",
+    "index.html": "/micro-tas2/index.html",
+    "main.84eb8f4a.css.map": "/micro-tas2/static/css/main.84eb8f4a.css.map",
+    "main.732ec957.js.map": "/micro-tas2/static/js/main.732ec957.js.map",
+    "453.4c4fe0f6.chunk.js.map": "/micro-tas2/static/js/453.4c4fe0f6.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.84eb8f4a.css",
+    "static/js/main.732ec957.js"
+  ]
+}
