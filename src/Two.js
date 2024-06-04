@@ -27,7 +27,8 @@ class Two extends Component {
     return (
       <div className="App">
         {!this.state.isAuthenticated ? (
-          <form onSubmit={this.handleSubmit}>
+          <div className="form-container">
+            <form onSubmit={this.handleSubmit}>
             <label>
               Enter Password:
               <input
@@ -38,6 +39,7 @@ class Two extends Component {
             </label>
             <button type="submit">Submit</button>
           </form>
+          </div>
         ) : (
           <div className="iframe-container">
             <Iframe

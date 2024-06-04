@@ -27,17 +27,19 @@ class Three extends Component {
     return (
       <div className="App">
         {!this.state.isAuthenticated ? (
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Enter Password:
-              <input
-                type="password"
+          <div className="form-container">
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Enter Password:
+                <input
+                  type="password"
                 value={this.state.enteredPassword}
                 onChange={this.handleChange}
               />
             </label>
             <button type="submit">Submit</button>
           </form>
+          </div>
         ) : (
           <div className="iframe-container">
             <Iframe
