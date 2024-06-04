@@ -2,7 +2,7 @@ import './App.css';
 import React, { Component } from 'react';
 import Iframe from './iframe.js';
 
-class Five extends Component {
+class Six extends Component {
   state = {
     password: '',
     isAuthenticated: false,
@@ -43,7 +43,7 @@ class Five extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://cdn.jwplayer.com/players/k4g6nHV1-PzqYXf16.html"
+              url="https://cdn.jwplayer.com/players/fLjc6c1M-PzqYXf16.html"
               width="100%"
               height="100%"
               id="myId"
@@ -59,4 +59,4 @@ class Five extends Component {
   }
 }
 
-export default Five;
+export default Six;
