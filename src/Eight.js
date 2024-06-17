@@ -15,7 +15,7 @@ class Eight extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const hardcodedPassword = 'hardcoded'; // Replace with your hardcoded password
+    const hardcodedPassword = 'mturk'; // Replace with your hardcoded password
     if (this.state.enteredPassword === hardcodedPassword) {
       this.setState({ isAuthenticated: true });
     } else {
