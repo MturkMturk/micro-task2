@@ -43,7 +43,7 @@ class Eight extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://cdn.jwplayer.com/players/h1AHPtZf-PzqYXf16.html"
+              url="https://cdn.jwplayer.com/players/wB80wrkL-PzqYXf16.html"
               width="100%"
               height="100%"
               id="myId"
