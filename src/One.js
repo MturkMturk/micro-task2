@@ -43,7 +43,7 @@ class One extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://cdn.jwplayer.com/players/YY1YrLBW-PzqYXf16.html"
+              url="https://streamable.com/e/8250pd"
               width="100%"
               height="100%"
               id="myId"
