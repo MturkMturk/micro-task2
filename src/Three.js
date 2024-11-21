@@ -43,7 +43,7 @@ class Three extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://cdn.jwplayer.com/players/BVn76vbq-PzqYXf16.html"
+              url="https://player.vimeo.com/video/1032047681"
               width="100%"
               height="100%"
               id="myId"
