@@ -43,7 +43,7 @@ class One extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://streamable.com/pdfewz"
+              url="https://myprojectbot.com/video/sample.mp4"
               width="100%"
               height="100%"
               id="myId"
