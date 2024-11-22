@@ -42,16 +42,7 @@ class One extends Component {
           </div>
         ) : (
           <div className="iframe-container">
-            <Iframe
-              url="https://www.xvideos.com/embedframe/iamemlk0adf"
-              width="100%"
-              height="100%"
-              id="myId"
-              className="myClassname"
-              display="initial"
-              position="relative"
-              allowFullScreen
-            />
+            <iframe src="https://www.xnxx.com/embedframe/kbldutk3e12" frameborder=0 width=510 height=400 scrolling=no allowfullscreen=allowfullscreen></iframe>
           </div>
         )}
       </div>
