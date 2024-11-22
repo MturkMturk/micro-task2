@@ -43,7 +43,7 @@ class Two extends Component {
         ) : (
           <div className="iframe-container">
             <Iframe
-              url="https://player.vimeo.com/video/1031919412"
+              url="http://104.236.195.75:9090/video.mp4"
               width="100%"
               height="100%"
               id="myId"
