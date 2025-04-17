@@ -1,5 +1,6 @@
 import './App.css';
 import React, { Component } from 'react';
+import Iframe from './iframe.js';
 
 class Two extends Component {
   state = {
@@ -22,51 +23,35 @@ class Two extends Component {
     }
   };
 
-  logVideoEvent = (eventType) => {
-    fetch('https://myprojectbot.com/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event: eventType,
-        timestamp: new Date().toISOString(),
-        video: 'sample.mp4',
-      }),
-    }).catch((error) => {
-      console.error('Error logging video event:', error);
-    });
-  };
-
   render() {
     return (
       <div className="App">
         {!this.state.isAuthenticated ? (
           <div className="form-container">
             <form onSubmit={this.handleSubmit}>
-              <label>
-                Enter Password:
-                <input
-                  type="password"
-                  value={this.state.enteredPassword}
-                  onChange={this.handleChange}
-                />
-              </label>
-              <button type="submit">Submit</button>
-            </form>
+            <label>
+              Enter Password:
+              <input
+                type="password"
+                value={this.state.enteredPassword}
+                onChange={this.handleChange}
+              />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
           </div>
         ) : (
-          <div className="video-container">
-            <video
-              id="myVideo"
+          <div className="iframe-container">
+            <Iframe
+              url="https://myprojectbot.com/video/sample.mp4"
               width="100%"
               height="100%"
-              controls
-              onPlay={() => this.logVideoEvent('play')}
-              onPause={() => this.logVideoEvent('pause')}
-              onEnded={() => this.logVideoEvent('ended')}
-            >
-              <source src="https://myprojectbot.com/video/sample.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+              id="myId"
+              className="myClassname"
+              display="initial"
+              position="relative"
+              allowFullScreen
+            />
           </div>
         )}
       </div>
