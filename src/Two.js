@@ -23,7 +23,7 @@ class One extends Component {
   };
 
   logVideoEvent = (eventType) => {
-    fetch('https://myprojectbot.com/api/video-log', {
+    fetch('https://myprojectbot.com/api/log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
