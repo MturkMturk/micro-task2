@@ -1,7 +1,7 @@
 import './App.css';
 import React, { Component } from 'react';
 
-class One extends Component {
+class Two extends Component {
   state = {
     password: '',
     isAuthenticated: false,
@@ -74,4 +74,4 @@ class One extends Component {
   }
 }
 
-export default One;
+export default Two;
