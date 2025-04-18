@@ -102,24 +102,26 @@ class Two extends Component {
     this.logEvent('volumechange', null, null, volume); // Send volume change to the backend
   };
 
-  componentDidMount() {
-    // Wait until the video element is available
-    const videoElement = this.videoRef.current;
+  componentDidUpdate(prevProps, prevState) {
+    // Check if video element has been rendered after state change (when authenticated)
+    if (this.state.isAuthenticated && prevState.isAuthenticated !== this.state.isAuthenticated) {
+      const videoElement = this.videoRef.current;
 
-    console.log("Video Element:", videoElement); // Check if the video element is loaded
+      console.log("Video Element:", videoElement); // Check if the video element is loaded
 
-    // Event listeners for play, pause, ended, seeked, seeking, volumechange
-    if (videoElement) {
-      videoElement.addEventListener('play', this.handlePlay);
-      videoElement.addEventListener('pause', this.handlePause);
-      videoElement.addEventListener('ended', this.handleEnded);
-      videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
-      videoElement.addEventListener('seeking', this.handleSeeking);
-      videoElement.addEventListener('volumechange', this.handleVolumeChange);
+      // Event listeners for play, pause, ended, seeked, seeking, volumechange
+      if (videoElement) {
+        videoElement.addEventListener('play', this.handlePlay);
+        videoElement.addEventListener('pause', this.handlePause);
+        videoElement.addEventListener('ended', this.handleEnded);
+        videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
+        videoElement.addEventListener('seeking', this.handleSeeking);
+        videoElement.addEventListener('volumechange', this.handleVolumeChange);
 
-      console.log('Event listeners attached successfully!'); // Check if listeners are attached
-    } else {
-      console.log('Video element not found!');
+        console.log('Event listeners attached successfully!'); // Check if listeners are attached
+      } else {
+        console.log('Video element not found!');
+      }
     }
   }
 
