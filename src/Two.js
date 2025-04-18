@@ -138,6 +138,7 @@ class Two extends Component {
 		@media (max-width: 768px) {
 		  .flashing-number {
 		    font-size: 30px; /* Make the number smaller for mobile */
+    		    padding: 10px; /* Reduced padding for smaller screens */
 		  }
 		}
           `}
