@@ -74,6 +74,42 @@ form {
   color: #61dafb;
 }
 
+.flashing-number {
+  position: fixed; /* Use fixed positioning for both mobile and desktop */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the number */
+  font-size: 50px; /* Default font size for desktop */
+  color: white;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark background for contrast */
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 999999; /* Ensure it's on top of all elements */
+  animation: flash 1s ease-in-out infinite;
+}
+
+/* Flash animation */
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Adjust for mobile screens */
+@media (max-width: 768px) {
+  .flashing-number {
+    font-size: 30px; /* Smaller font size for mobile */
+    padding: 10px; /* Smaller padding for mobile screens */
+  }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
