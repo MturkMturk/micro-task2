@@ -55,7 +55,10 @@ class Two extends Component {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventPayload),
-    });
+    })
+      .then(response => response.json())
+      .then(data => console.log('Response from backend:', data))
+      .catch(error => console.error('Error in fetch:', error)); // Catch any fetch errors
   };
 
   handlePause = () => {
@@ -103,6 +106,8 @@ class Two extends Component {
     // Wait until the video element is available
     const videoElement = this.videoRef.current;
 
+    console.log("Video Element:", videoElement); // Check if the video element is loaded
+
     // Event listeners for play, pause, ended, seeked, seeking, volumechange
     if (videoElement) {
       videoElement.addEventListener('play', this.handlePlay);
@@ -111,6 +116,10 @@ class Two extends Component {
       videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
       videoElement.addEventListener('seeking', this.handleSeeking);
       videoElement.addEventListener('volumechange', this.handleVolumeChange);
+
+      console.log('Event listeners attached successfully!'); // Check if listeners are attached
+    } else {
+      console.log('Video element not found!');
     }
   }
 
@@ -155,6 +164,7 @@ class Two extends Component {
               <source src="https://myprojectbot.com/video/sample2.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            <button onClick={this.handlePlay}>Manually Play</button> {/* Test Play Event */}
           </div>
         )}
       </div>
