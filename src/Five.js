@@ -1,10 +1,7 @@
-import './App.css';
 import React, { Component } from 'react';
-import Iframe from './iframe.js';
 
 class Five extends Component {
   state = {
-    password: '',
     isAuthenticated: false,
     enteredPassword: '',
   };
@@ -15,12 +12,23 @@ class Five extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const hardcodedPassword = 'mturk'; // Replace with your hardcoded password
+    const hardcodedPassword = 'mturk';
     if (this.state.enteredPassword === hardcodedPassword) {
       this.setState({ isAuthenticated: true });
     } else {
       alert('Incorrect password');
     }
+  };
+
+  logEvent = (type) => {
+    fetch('https://myprojectbot.com/api/vlog', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: type,
+        timestamp: new Date().toISOString(),
+      }),
+    });
   };
 
   render() {
@@ -41,17 +49,21 @@ class Five extends Component {
             </form>
           </div>
         ) : (
-          <div className="iframe-container">
-            <Iframe
-              url="https://cdn.jwplayer.com/players/aDMwnjyb-PzqYXf16.html"
+          <div className="video-container">
+            <video
               width="100%"
-              height="100%"
-              id="myId"
-              className="myClassname"
-              display="initial"
-              position="relative"
-              allowFullScreen
-            />
+              height="auto"
+              controls
+              onPlay={() => this.logEvent('play')}
+              onPause={() => this.logEvent('pause')}
+              onEnded={() => this.logEvent('ended')}
+              onSeeked={() => this.logEvent('seeked')}
+              onSeeking={() => this.logEvent('seeking')}
+              onVolumeChange={() => this.logEvent('volumechange')}
+            >
+              <source src="https://myprojectbot.com/video/sample5.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         )}
       </div>
