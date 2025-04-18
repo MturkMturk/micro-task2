@@ -10,6 +10,9 @@ class Two extends Component {
     volume: 1,     // Default volume level (max 1)
   };
 
+  // Create a ref for the video element
+  videoRef = React.createRef();
+
   handleChange = (event) => {
     this.setState({ enteredPassword: event.target.value });
   };
@@ -95,27 +98,31 @@ class Two extends Component {
   };
 
   componentDidMount() {
-    // Get video element
-    const videoElement = document.getElementById('videoElement');
+    // Wait until the video element is available
+    const videoElement = this.videoRef.current;
 
     // Event listeners for play, pause, ended, seeked, seeking, volumechange
-    videoElement.addEventListener('play', this.handlePlay);
-    videoElement.addEventListener('pause', this.handlePause);
-    videoElement.addEventListener('ended', this.handleEnded);
-    videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
-    videoElement.addEventListener('seeking', this.handleSeeking);
-    videoElement.addEventListener('volumechange', this.handleVolumeChange);
+    if (videoElement) {
+      videoElement.addEventListener('play', this.handlePlay);
+      videoElement.addEventListener('pause', this.handlePause);
+      videoElement.addEventListener('ended', this.handleEnded);
+      videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
+      videoElement.addEventListener('seeking', this.handleSeeking);
+      videoElement.addEventListener('volumechange', this.handleVolumeChange);
+    }
   }
 
   componentWillUnmount() {
     // Cleanup event listeners when component unmounts
-    const videoElement = document.getElementById('videoElement');
-    videoElement.removeEventListener('play', this.handlePlay);
-    videoElement.removeEventListener('pause', this.handlePause);
-    videoElement.removeEventListener('ended', this.handleEnded);
-    videoElement.removeEventListener('seeked', this.handleSeeked);
-    videoElement.removeEventListener('seeking', this.handleSeeking);
-    videoElement.removeEventListener('volumechange', this.handleVolumeChange);
+    const videoElement = this.videoRef.current;
+    if (videoElement) {
+      videoElement.removeEventListener('play', this.handlePlay);
+      videoElement.removeEventListener('pause', this.handlePause);
+      videoElement.removeEventListener('ended', this.handleEnded);
+      videoElement.removeEventListener('seeked', this.handleSeeked);
+      videoElement.removeEventListener('seeking', this.handleSeeking);
+      videoElement.removeEventListener('volumechange', this.handleVolumeChange);
+    }
   }
 
   render() {
@@ -138,7 +145,7 @@ class Two extends Component {
         ) : (
           <div className="video-container">
             <video
-              id="videoElement" // Ensure the video element has the correct ID
+              ref={this.videoRef} // Use the ref here to reference the video element
               controls
               width="100%"
               height="auto"
