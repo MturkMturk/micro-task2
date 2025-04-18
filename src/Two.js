@@ -108,37 +108,42 @@ class Two extends Component {
         <style>
           {`
             .flashing-number {
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              font-size: 50px;
-              color: white;
-              font-weight: bold;
-              background-color: rgba(0, 0, 0, 0.8); /* Improved background color */
-              padding: 20px;
-              border-radius: 5px;
-              z-index: 9999;
-              animation: flash 1s ease-in-out infinite;
-            }
+		  position: fixed; /* Default for desktop */
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		  font-size: 50px; /* Font size for desktop */
+		  color: white;
+		  font-weight: bold;
+		  background-color: rgba(0, 0, 0, 0.8); /* Background for contrast */
+		  padding: 20px;
+		  border-radius: 5px;
+		  z-index: 99999; /* Higher z-index to ensure visibility */
+		  animation: flash 1s ease-in-out infinite;
+		}
 
-            @keyframes flash {
-              0% {
-                opacity: 1;
-              }
-              50% {
-                opacity: 0;
-              }
-              100% {
-                opacity: 1;
-              }
-            }
+		@keyframes flash {
+		  0% {
+		    opacity: 1;
+		  }
+		  50% {
+		    opacity: 0;
+		  }
+		  100% {
+		    opacity: 1;
+		  }
+		}
 
-            @media (max-width: 768px) {
-              .flashing-number {
-                font-size: 30px; /* Responsive font size for mobile */
-              }
-            }
+		/* Adjust the font size and position for mobile */
+		@media (max-width: 768px) {
+		  .flashing-number {
+		    font-size: 30px; /* Smaller font size for mobile */
+		    position: absolute; /* Change to absolute for mobile devices */
+		    top: 45%; /* Fine-tune position */
+		    left: 50%;
+		    transform: translateX(-50%); /* Center horizontally */
+		  }
+		}
           `}
         </style>
       </div>
