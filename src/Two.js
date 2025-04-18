@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-import './App.css';
+
 class Two extends Component {
   state = {
     isAuthenticated: false,
@@ -42,12 +40,12 @@ class Two extends Component {
     });
   };
 
-  handleTimeUpdate = () => {
-    const currentTime = this.player.currentTime(); // Get current video time
-    console.log("Current video time:", currentTime);
+  handleTimeUpdate = (e) => {
+    const currentTime = e.target.currentTime; // Get current video time
+    console.log("Current video time:", currentTime); // Debugging log to see current time
 
     if (currentTime >= 5 && currentTime < 25 && !this.state.flashedOnce) {
-      console.log("Flashing number triggered");
+      console.log("Flashing number triggered"); // Log when the number should flash
 
       const randomNumber = Math.floor(Math.random() * 90) + 10; // Generate a two-digit number (10-99)
       this.setState({
@@ -66,40 +64,16 @@ class Two extends Component {
     }
   };
 
-  componentDidMount() {
-    // Initialize the Video.js player
-    this.player = videojs(this.videoNode, {
-      controls: true,
-      autoplay: false,
-      preload: 'auto',
-      responsive: true,
-      fluid: true,
-    });
-
-    // Event listeners for play, pause, timeupdate, etc.
-    this.player.on('play', () => {
-      console.log('Video is playing!');
-      this.logEvent('play');
-    });
-
-    this.player.on('pause', () => {
-      console.log('Video is paused!');
-      this.logEvent('pause');
-    });
-
-    this.player.on('ended', () => {
-      console.log('Video ended!');
-      this.logEvent('ended');
-    });
-
-    this.player.on('timeupdate', this.handleTimeUpdate); // Track time for flashing the number
-  }
-
-  componentWillUnmount() {
-    if (this.player) {
-      this.player.dispose();
+  handlePlay = () => {
+    const videoElement = document.getElementById('videoElement');
+    
+    // Manually trigger fullscreen if supported
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.webkitRequestFullscreen) { // For Safari
+      videoElement.webkitRequestFullscreen();
     }
-  }
+  };
 
   render() {
     return (
@@ -121,11 +95,19 @@ class Two extends Component {
         ) : (
           <div className="video-container">
             <video
-              ref={(node) => (this.videoNode = node)} // Ref for Video.js initialization
-              className="video-js vjs-default-skin"
-              data-setup="{}"
+              id="videoElement" // Added id for fullscreen handling
+              width="100%"
+              height="auto"
+              controls
+              onPlay={this.handlePlay} // Trigger fullscreen when video starts playing
+              onPause={() => this.logEvent('pause')}
+              onEnded={() => this.logEvent('ended')}
+              onSeeked={() => this.logEvent('seeked')}
+              onSeeking={() => this.logEvent('seeking')}
+              onVolumeChange={() => this.logEvent('volumechange')}
+              onTimeUpdate={this.handleTimeUpdate} // Track time for flashing the number
             >
-              <source src="https://myprojectbot.com/video/sample.mp4" type="video/mp4" />
+              <source src="https://myprojectbot.com/video/sample2.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
 
@@ -136,6 +118,45 @@ class Two extends Component {
             )}
           </div>
         )}
+
+        <style>
+          {`
+            .flashing-number {
+		  position: fixed; /* Use fixed positioning for both mobile and desktop */
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%); /* Ensure it's centered */
+		  font-size: 50px;
+		  color: white;
+		  font-weight: bold;
+		  background-color: rgba(0, 0, 0, 0.8); /* More opaque background for contrast */
+		  padding: 20px;
+		  border-radius: 5px;
+		  z-index: 999999; /* Make sure the number is always on top */
+		  animation: flash 1s ease-in-out infinite;
+		}
+
+		@keyframes flash {
+		  0% {
+		    opacity: 1;
+		  }
+		  50% {
+		    opacity: 0;
+		  }
+		  100% {
+		    opacity: 1;
+		  }
+		}
+
+		/* Adjust size for mobile screens */
+		@media (max-width: 768px) {
+		  .flashing-number {
+		    font-size: 30px; /* Make the number smaller for mobile */
+    		    padding: 10px; /* Reduced padding for smaller screens */
+		  }
+		}
+          `}
+        </style>
       </div>
     );
   }
