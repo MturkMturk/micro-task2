@@ -49,6 +49,8 @@ class Two extends Component {
       eventPayload.volume = volume; // Send volume level to the backend
     }
 
+    console.log('Sending event to backend:', eventPayload); // Log the payload being sent
+
     fetch('https://myprojectbot.com/api/vlog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
