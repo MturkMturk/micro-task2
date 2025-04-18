@@ -78,8 +78,19 @@ class Two extends Component {
 
   handleFullscreenChange = () => {
     const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
-    console.log("Fullscreen mode:", isFullscreen);
-    // You can add specific adjustments here if necessary
+    console.log("Fullscreen mode:", isFullscreen); // Log when the mode changes
+    // Optional: add any layout changes here when the fullscreen mode is activated
+  };
+
+  handlePlay = () => {
+    const videoElement = document.getElementById('videoElement');
+    
+    // Manually trigger fullscreen if supported
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.webkitRequestFullscreen) { // For Safari
+      videoElement.webkitRequestFullscreen();
+    }
   };
 
   render() {
@@ -102,10 +113,11 @@ class Two extends Component {
         ) : (
           <div className="video-container">
             <video
+              id="videoElement" // Added id for fullscreen handling
               width="100%"
               height="auto"
               controls
-              onPlay={() => this.logEvent('play')}
+              onPlay={this.handlePlay} // Trigger fullscreen when video starts playing
               onPause={() => this.logEvent('pause')}
               onEnded={() => this.logEvent('ended')}
               onSeeked={() => this.logEvent('seeked')}
