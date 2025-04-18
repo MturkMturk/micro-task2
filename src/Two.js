@@ -4,9 +4,9 @@ class Two extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
-    showNumber: false,  // Controls the visibility of the number
-    number: null,       // The number to display
-    flashedOnce: false, // To ensure the number is flashed only once
+    showNumber: false,
+    number: null,
+    flashedOnce: false,
   };
 
   handleChange = (event) => {
@@ -30,7 +30,7 @@ class Two extends Component {
     };
 
     if (number !== null) {
-      eventPayload.number = number; // Include the number if it's provided
+      eventPayload.number = number;
     }
 
     fetch('https://myprojectbot.com/api/vlog', {
@@ -41,7 +41,7 @@ class Two extends Component {
   };
 
   handleTimeUpdate = (e) => {
-    const currentTime = e.target.currentTime; // Get current video time
+    const currentTime = e.target.currentTime;
 
     // Only generate and show the number once, between 5 to 8 minutes (300 to 480 seconds)
     if (currentTime >= 5 && currentTime < 25 && !this.state.flashedOnce) {
@@ -108,38 +108,37 @@ class Two extends Component {
         <style>
           {`
             .flashing-number {
-	    position: absolute;
-	    top: 50%;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
-	    font-size: 50px; /* Adjust the font size if needed */
-	    color: white;
-	    font-weight: bold;
-	    background-color: rgba(0, 0, 0, 0.5);
-	    padding: 10px;
-	    border-radius: 5px;
-	    z-index: 10; /* Ensure it's on top */
-	    animation: flash 1s ease-in-out infinite;
-	    }
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              font-size: 50px;
+              color: white;
+              font-weight: bold;
+              background-color: rgba(0, 0, 0, 0.8); /* Improved background color */
+              padding: 20px;
+              border-radius: 5px;
+              z-index: 9999;
+              animation: flash 1s ease-in-out infinite;
+            }
 
             @keyframes flash {
-		  0% {
-		    opacity: 1;
-		  }
-		  50% {
-		    opacity: 0;
-		  }
-		  100% {
-		    opacity: 1;
-		  }
-		}
-		
-	    /* Adjust the font size for mobile */
-	    @media (max-width: 768px) {
-	    	.flashing-number {
-	    	font-size: 30px; /* Smaller size for mobile */
-		}
-	    }
+              0% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0;
+              }
+              100% {
+                opacity: 1;
+              }
+            }
+
+            @media (max-width: 768px) {
+              .flashing-number {
+                font-size: 30px; /* Responsive font size for mobile */
+              }
+            }
           `}
         </style>
       </div>
