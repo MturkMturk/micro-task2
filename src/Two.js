@@ -108,17 +108,17 @@ class Two extends Component {
         <style>
           {`
             .flashing-number {
-		  position: fixed; /* Default for desktop */
+		  position: fixed; /* Use fixed positioning for both mobile and desktop */
 		  top: 50%;
 		  left: 50%;
-		  transform: translate(-50%, -50%);
-		  font-size: 50px; /* Font size for desktop */
+		  transform: translate(-50%, -50%); /* Ensure it's centered */
+		  font-size: 50px;
 		  color: white;
 		  font-weight: bold;
-		  background-color: rgba(0, 0, 0, 0.8); /* Background for contrast */
+		  background-color: rgba(0, 0, 0, 0.8); /* More opaque background for contrast */
 		  padding: 20px;
 		  border-radius: 5px;
-		  z-index: 99999; /* Higher z-index to ensure visibility */
+		  z-index: 999999; /* Make sure the number is always on top */
 		  animation: flash 1s ease-in-out infinite;
 		}
 
@@ -134,14 +134,10 @@ class Two extends Component {
 		  }
 		}
 
-		/* Adjust the font size and position for mobile */
+		/* Adjust size for mobile screens */
 		@media (max-width: 768px) {
 		  .flashing-number {
-		    font-size: 30px; /* Smaller font size for mobile */
-		    position: absolute; /* Change to absolute for mobile devices */
-		    top: 45%; /* Fine-tune position */
-		    left: 50%;
-		    transform: translateX(-50%); /* Center horizontally */
+		    font-size: 30px; /* Make the number smaller for mobile */
 		  }
 		}
           `}
