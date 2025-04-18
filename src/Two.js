@@ -41,24 +41,26 @@ class Two extends Component {
   };
 
   handleTimeUpdate = (e) => {
-    const currentTime = e.target.currentTime;
+    const currentTime = e.target.currentTime; // Get current video time
+    console.log("Current video time:", currentTime); // Debugging log to see current time
 
-    // Only generate and show the number once, between 5 to 8 minutes (300 to 480 seconds)
     if (currentTime >= 5 && currentTime < 25 && !this.state.flashedOnce) {
+      console.log("Flashing number triggered"); // Log when the number should flash
+
       const randomNumber = Math.floor(Math.random() * 90) + 10; // Generate a two-digit number (10-99)
       this.setState({
         showNumber: true,
         number: randomNumber,
-        flashedOnce: true, // Ensure the number is only flashed once
+        flashedOnce: true,
       });
 
-      // Send the generated number to the backend
-      this.logEvent('number-flash', randomNumber);
+      console.log("Generated Number: ", randomNumber); // Log the generated number
 
-      // Hide the number after 2-3 seconds
+      this.logEvent('number-flash', randomNumber); // Send the event to the backend
+
       setTimeout(() => {
         this.setState({ showNumber: false });
-      }, 3000);
+      }, 3000); // Hide the number after 2-3 seconds
     }
   };
 
