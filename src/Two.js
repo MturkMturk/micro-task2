@@ -64,6 +64,24 @@ class Two extends Component {
     }
   };
 
+  componentDidMount() {
+    // Listen for fullscreen events and adjust number position if needed
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+  }
+
+  componentWillUnmount() {
+    // Clean up event listeners when the component is unmounted
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+  }
+
+  handleFullscreenChange = () => {
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+    console.log("Fullscreen mode:", isFullscreen);
+    // You can add specific adjustments here if necessary
+  };
+
   render() {
     return (
       <div className="App">
