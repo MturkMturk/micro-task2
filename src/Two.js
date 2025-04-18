@@ -6,6 +6,7 @@ class Two extends Component {
     isAuthenticated: false,
     enteredPassword: '',
     pauseCount: 0, // Track the number of pauses
+    seekCount: 0,  // Track the number of seeks
     volume: 1,     // Default volume level (max 1)
   };
 
@@ -23,7 +24,7 @@ class Two extends Component {
     }
   };
 
-  logEvent = (type, pauseCount = null, volume = null) => {
+  logEvent = (type, pauseCount = null, seekCount = null, volume = null) => {
     const eventPayload = {
       eventType: type,
       timestamp: new Date().toISOString(),
@@ -31,6 +32,10 @@ class Two extends Component {
 
     if (pauseCount !== null) {
       eventPayload.pauseCount = pauseCount; // Send pause count to the backend
+    }
+
+    if (seekCount !== null) {
+      eventPayload.seekCount = seekCount; // Send seek count to the backend
     }
 
     if (volume !== null) {
@@ -65,8 +70,12 @@ class Two extends Component {
   };
 
   handleSeeked = () => {
-    console.log('Seeked to a new position!');
-    this.logEvent('seeked'); // Log seeked event
+    // Increment seek count every time the video is seeked
+    const newSeekCount = this.state.seekCount + 1;
+    this.setState({ seekCount: newSeekCount });
+
+    console.log('Video was seeked!', newSeekCount);
+    this.logEvent('seeked', null, newSeekCount); // Send seek count to backend
   };
 
   handleSeeking = () => {
@@ -78,7 +87,7 @@ class Two extends Component {
     const volume = e.target.volume; // Get the current volume
     this.setState({ volume });
     console.log(`Volume changed to: ${volume}`);
-    this.logEvent('volumechange', null, volume); // Send volume change to the backend
+    this.logEvent('volumechange', null, null, volume); // Send volume change to the backend
   };
 
   componentDidMount() {
@@ -89,7 +98,7 @@ class Two extends Component {
     videoElement.addEventListener('play', this.handlePlay);
     videoElement.addEventListener('pause', this.handlePause);
     videoElement.addEventListener('ended', this.handleEnded);
-    videoElement.addEventListener('seeked', this.handleSeeked);
+    videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
     videoElement.addEventListener('seeking', this.handleSeeking);
     videoElement.addEventListener('volumechange', this.handleVolumeChange);
   }
