@@ -5,12 +5,11 @@ class Two extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
-    pauseCount: 0, // Track the number of pauses
-    seekCount: 0,  // Track the number of seeks
-    volume: 1,     // Default volume level (max 1)
+    pauseCount: 0,
+    seekCount: 0,
+    volume: 1,
   };
 
-  // Create a ref for the video element
   videoRef = React.createRef();
 
   handleChange = (event) => {
@@ -28,105 +27,72 @@ class Two extends Component {
   };
 
   logEvent = (type, pauseCount = null, seekCount = null, volume = null) => {
-    // Get the current date in 'yyyy-MM-dd' format
-    const currentDate = new Date().toISOString().split('T')[0]; // Format: 'yyyy-MM-dd'
+    const currentDate = new Date().toISOString().split('T')[0];
 
     const eventPayload = {
       eventType: type,
       timestamp: new Date().toISOString(),
-      date: currentDate, // Add the date field
+      date: currentDate,
     };
 
-    if (pauseCount !== null) {
-      eventPayload.pauseCount = pauseCount; // Send pause count to the backend
-    }
-
-    if (seekCount !== null) {
-      eventPayload.seekCount = seekCount; // Send seek count to the backend
-    }
-
-    if (volume !== null) {
-      eventPayload.volume = volume; // Send volume level to the backend
-    }
-
-    console.log('Sending event to backend:', eventPayload); // Log the payload being sent
+    if (pauseCount !== null) eventPayload.pauseCount = pauseCount;
+    if (seekCount !== null) eventPayload.seekCount = seekCount;
+    if (volume !== null) eventPayload.volume = volume;
 
     fetch('https://myprojectbot.com/api/vlog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventPayload),
-    })
-      .then(response => response.json())
-      .then(data => console.log('Response from backend:', data))
-      .catch(error => console.error('Error in fetch:', error)); // Catch any fetch errors
+    }).catch(() => {
+      // silently fail or add error handling logic if needed
+    });
   };
 
   handlePause = () => {
-    // Increment pause count every time the video is paused
     const newPauseCount = this.state.pauseCount + 1;
     this.setState({ pauseCount: newPauseCount });
-
-    // Log the pause event with updated pause count
-    console.log('Video is paused!', newPauseCount);
-    this.logEvent('pause', newPauseCount); // Send pause count to backend
+    this.logEvent('pause', newPauseCount);
   };
 
   handlePlay = () => {
-    console.log('Video is playing!');
-    this.logEvent('play'); // Log play event
+    this.logEvent('play');
   };
 
   handleEnded = () => {
-    console.log('Video ended!');
-    this.logEvent('ended'); // Log ended event
+    this.logEvent('ended');
   };
 
   handleSeeked = () => {
-    // Increment seek count every time the video is seeked
     const newSeekCount = this.state.seekCount + 1;
     this.setState({ seekCount: newSeekCount });
-
-    console.log('Video was seeked!', newSeekCount);
-    this.logEvent('seeked', null, newSeekCount); // Send seek count to backend
+    this.logEvent('seeked', null, newSeekCount);
   };
 
   handleSeeking = () => {
-    console.log('Video is seeking!');
-    this.logEvent('seeking'); // Log seeking event
+    this.logEvent('seeking');
   };
 
   handleVolumeChange = (e) => {
-    const volume = e.target.volume; // Get the current volume
+    const volume = e.target.volume;
     this.setState({ volume });
-    console.log(`Volume changed to: ${volume}`);
-    this.logEvent('volumechange', null, null, volume); // Send volume change to the backend
+    this.logEvent('volumechange', null, null, volume);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    // Check if video element has been rendered after state change (when authenticated)
     if (this.state.isAuthenticated && prevState.isAuthenticated !== this.state.isAuthenticated) {
       const videoElement = this.videoRef.current;
-
-      console.log("Video Element:", videoElement); // Check if the video element is loaded
-
-      // Event listeners for play, pause, ended, seeked, seeking, volumechange
       if (videoElement) {
         videoElement.addEventListener('play', this.handlePlay);
         videoElement.addEventListener('pause', this.handlePause);
         videoElement.addEventListener('ended', this.handleEnded);
-        videoElement.addEventListener('seeked', this.handleSeeked); // Listen for seeked
+        videoElement.addEventListener('seeked', this.handleSeeked);
         videoElement.addEventListener('seeking', this.handleSeeking);
         videoElement.addEventListener('volumechange', this.handleVolumeChange);
-
-        console.log('Event listeners attached successfully!'); // Check if listeners are attached
-      } else {
-        console.log('Video element not found!');
       }
     }
   }
 
   componentWillUnmount() {
-    // Cleanup event listeners when component unmounts
     const videoElement = this.videoRef.current;
     if (videoElement) {
       videoElement.removeEventListener('play', this.handlePlay);
@@ -158,7 +124,7 @@ class Two extends Component {
         ) : (
           <div className="video-container">
             <video
-              ref={this.videoRef} // Use the ref here to reference the video element
+              ref={this.videoRef}
               controls
               width="100%"
               height="auto"
@@ -166,7 +132,6 @@ class Two extends Component {
               <source src="https://myprojectbot.com/video/sample2.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-            <button onClick={this.handlePlay}>Manually Play</button> {/* Test Play Event */}
           </div>
         )}
       </div>
