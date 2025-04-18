@@ -25,9 +25,13 @@ class Two extends Component {
   };
 
   logEvent = (type, pauseCount = null, seekCount = null, volume = null) => {
+    // Get the current date in 'yyyy-MM-dd' format
+    const currentDate = new Date().toISOString().split('T')[0]; // Format: 'yyyy-MM-dd'
+
     const eventPayload = {
       eventType: type,
       timestamp: new Date().toISOString(),
+      date: currentDate, // Add the date field
     };
 
     if (pauseCount !== null) {
