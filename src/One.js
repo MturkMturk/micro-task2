@@ -37,13 +37,14 @@ class One extends Component {
     const videoTime = video ? video.currentTime : null;
     const now = new Date();
     const timestamp = this.formatTimeAMPM(now);
-    const date = now.toISOString().split('T')[0]; // e.g., 2025-04-21
+    const date = now.toISOString().split('T')[0]; // e.g., "2025-04-21"
 
     const eventPayload = {
       eventType,
       timestamp,
       date,
       videoTime,
+      vid: "1" // Hardcoded constant session ID
     };
 
     fetch('https://myprojectbot.com/api/vlog', {
