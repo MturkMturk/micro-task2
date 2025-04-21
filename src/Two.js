@@ -44,7 +44,7 @@ class Two extends Component {
       timestamp,
       date,
       videoTime,
-      vid: "1" // Hardcoded constant session ID
+      vid: "2" // Hardcoded constant session ID
     };
 
     fetch('https://myprojectbot.com/api/vlog', {
