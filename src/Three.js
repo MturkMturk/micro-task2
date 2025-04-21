@@ -5,9 +5,6 @@ class Three extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
-    pauseCount: 0,
-    seekCount: 0,
-    volume: 1,
   };
 
   videoRef = React.createRef();
@@ -26,57 +23,44 @@ class Three extends Component {
     }
   };
 
-  logEvent = (type, pauseCount = null, seekCount = null, volume = null) => {
-    const currentDate = new Date().toISOString().split('T')[0];
+  formatTimeAMPM = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+  };
+
+  logEvent = (eventType) => {
+    const video = this.videoRef.current;
+    const videoTime = video ? video.currentTime : null;
+    const now = new Date();
+    const timestamp = this.formatTimeAMPM(now);
+    const date = now.toISOString().split('T')[0]; // e.g., 2025-04-21
 
     const eventPayload = {
-      eventType: type,
-      timestamp: new Date().toISOString(),
-      date: currentDate,
+      eventType,
+      timestamp,
+      date,
+      videoTime,
     };
-
-    if (pauseCount !== null) eventPayload.pauseCount = pauseCount;
-    if (seekCount !== null) eventPayload.seekCount = seekCount;
-    if (volume !== null) eventPayload.volume = volume;
 
     fetch('https://myprojectbot.com/api/vlog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventPayload),
-    }).catch(() => {
-      // silently fail or add error handling logic if needed
+    }).catch((error) => {
+      console.error('Error sending event log:', error);
     });
   };
 
-  handlePause = () => {
-    const newPauseCount = this.state.pauseCount + 1;
-    this.setState({ pauseCount: newPauseCount });
-    this.logEvent('pause', newPauseCount);
-  };
-
-  handlePlay = () => {
-    this.logEvent('play');
-  };
-
-  handleEnded = () => {
-    this.logEvent('ended');
-  };
-
-  handleSeeked = () => {
-    const newSeekCount = this.state.seekCount + 1;
-    this.setState({ seekCount: newSeekCount });
-    this.logEvent('seeked', null, newSeekCount);
-  };
-
-  handleSeeking = () => {
-    this.logEvent('seeking');
-  };
-
-  handleVolumeChange = (e) => {
-    const volume = e.target.volume;
-    this.setState({ volume });
-    this.logEvent('volumechange', null, null, volume);
-  };
+  handlePlay = () => this.logEvent('play');
+  handlePause = () => this.logEvent('pause');
+  handleEnded = () => this.logEvent('ended');
+  handleSeeked = () => this.logEvent('seeked');
+  handleSeeking = () => this.logEvent('seeking');
+  handleVolumeChange = () => this.logEvent('volumechange');
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isAuthenticated && prevState.isAuthenticated !== this.state.isAuthenticated) {
