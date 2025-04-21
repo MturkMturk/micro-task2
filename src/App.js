@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import React from 'react';
+import Main from './Main';
 import One from './One';
 import Two from './Two';
 import Three from './Three';
@@ -15,6 +16,7 @@ import Ten from './Ten';
 const App = () => {
   return (
     <Routes>
+      <Route path='/main' element={<Main />} />
       <Route path='/one' element={<One />} />
       <Route path='/two' element={<Two />} />
       <Route path='/three' element={<Three />} />
