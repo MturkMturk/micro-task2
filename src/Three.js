@@ -5,39 +5,65 @@ class Three extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
-    isFullscreen: false,
   };
 
   videoRef = React.createRef();
-  IDLE_TIMEOUT_MS = 2 * 60 * 1000;
+
+  // ===== CONFIG =====
+  IDLE_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes after pause/end
+
+  // ===== INTERNAL FLAGS =====
   isVideoPlaying = false;
   idleTimer = null;
 
-  handleChange = (e) => this.setState({ enteredPassword: e.target.value });
+  // ===== AUTH =====
+  handleChange = (event) => {
+    this.setState({ enteredPassword: event.target.value });
+  };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    if (this.state.enteredPassword === 'mturk') {
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const hardcodedPassword = 'mturk';
+
+    if (this.state.enteredPassword === hardcodedPassword) {
       this.setState({ isAuthenticated: true });
     } else {
       alert('Incorrect password');
     }
   };
 
+  // ===== TIME FORMAT =====
+  formatTimeAMPM = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+  };
+
+  // ===== LOGGING =====
   logEvent = (eventType) => {
-    const v = this.videoRef.current;
+    const video = this.videoRef.current;
+    const videoTime = video ? video.currentTime : null;
+    const now = new Date();
+
+    const eventPayload = {
+      eventType,
+      timestamp: this.formatTimeAMPM(now),
+      date: now.toISOString().split('T')[0],
+      videoTime,
+      vid: '3',
+    };
+
     fetch('https://myprojectbot.com/api/vlog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        eventType,
-        videoTime: v ? v.currentTime : null,
-        date: new Date().toISOString().split('T')[0],
-        vid: '3',
-      }),
+      body: JSON.stringify(eventPayload),
     }).catch(() => {});
   };
 
+  // ===== VIDEO HANDLERS =====
   handlePlay = () => {
     this.isVideoPlaying = true;
     clearTimeout(this.idleTimer);
@@ -56,25 +82,44 @@ class Three extends Component {
     this.logEvent('ended');
   };
 
+  handleSeeked = () => this.logEvent('seeked');
+  handleSeeking = () => this.logEvent('seeking');
+  handleVolumeChange = () => this.logEvent('volumechange');
+
+  // ===== IDLE TIMER =====
   startIdleTimer = () => {
     if (!this.state.isAuthenticated || this.isVideoPlaying) return;
+
     clearTimeout(this.idleTimer);
-    this.idleTimer = setTimeout(this.lockSession, this.IDLE_TIMEOUT_MS);
+    this.idleTimer = setTimeout(() => {
+      this.lockSession();
+    }, this.IDLE_TIMEOUT_MS);
   };
 
+  // ===== LOCK =====
   lockSession = () => {
-    if (this.videoRef.current) this.videoRef.current.pause();
+    if (this.videoRef.current) {
+      this.videoRef.current.pause();
+    }
+
+    // Hard refresh ensures password screen
     window.location.reload();
   };
 
+  // ===== VISIBILITY / BACKGROUND (iOS SAFE) =====
   handleVisibilityChange = () => {
-    if (document.hidden && this.state.isAuthenticated) this.lockSession();
+    if (document.hidden && this.state.isAuthenticated) {
+      this.lockSession();
+    }
   };
 
   handlePageHide = () => {
-    if (this.state.isAuthenticated) this.lockSession();
+    if (this.state.isAuthenticated) {
+      this.lockSession();
+    }
   };
 
+  // ===== LIFECYCLE =====
   componentDidMount() {
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('pagehide', this.handlePageHide);
@@ -82,12 +127,16 @@ class Three extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isAuthenticated && !prevState.isAuthenticated) {
-      const v = this.videoRef.current;
-      if (!v) return;
+      const video = this.videoRef.current;
 
-      v.addEventListener('play', this.handlePlay);
-      v.addEventListener('pause', this.handlePause);
-      v.addEventListener('ended', this.handleEnded);
+      if (video) {
+        video.addEventListener('play', this.handlePlay);
+        video.addEventListener('pause', this.handlePause);
+        video.addEventListener('ended', this.handleEnded);
+        video.addEventListener('seeked', this.handleSeeked);
+        video.addEventListener('seeking', this.handleSeeking);
+        video.addEventListener('volumechange', this.handleVolumeChange);
+      }
     }
   }
 
@@ -95,87 +144,52 @@ class Three extends Component {
     clearTimeout(this.idleTimer);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     window.removeEventListener('pagehide', this.handlePageHide);
+
+    const video = this.videoRef.current;
+    if (video) {
+      video.removeEventListener('play', this.handlePlay);
+      video.removeEventListener('pause', this.handlePause);
+      video.removeEventListener('ended', this.handleEnded);
+      video.removeEventListener('seeked', this.handleSeeked);
+      video.removeEventListener('seeking', this.handleSeeking);
+      video.removeEventListener('volumechange', this.handleVolumeChange);
+    }
   }
 
-  toggleFullscreen = () => {
-    this.setState((prev) => ({ isFullscreen: !prev.isFullscreen }));
-  };
-
+  // ===== RENDER =====
   render() {
-    const { isAuthenticated, isFullscreen } = this.state;
-
-    const videoStyle = isFullscreen
-      ? {
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: 9999,
-          backgroundColor: 'black',
-        }
-      : {
-          width: '100%',
-          height: 'auto',
-        };
-
-    const fullscreenButtonStyle = {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      zIndex: 10000,
-      backgroundColor: 'rgba(0,0,0,0.6)',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      padding: '8px 12px',
-      cursor: 'pointer',
-      fontSize: '14px',
-    };
-
     return (
       <div className="App">
-        {!isAuthenticated ? (
-          <form onSubmit={this.handleSubmit}>
-            <input
-              type="password"
-              placeholder="Enter password"
-              onChange={this.handleChange}
-            />
-            <button type="submit">Submit</button>
-          </form>
+        {!this.state.isAuthenticated ? (
+          <div className="form-container">
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Enter Password:
+                <input
+                  type="password"
+                  value={this.state.enteredPassword}
+                  onChange={this.handleChange}
+                />
+              </label>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
         ) : (
-          <div style={{ position: 'relative' }}>
+          <div className="video-container">
             <video
               ref={this.videoRef}
               controls
-              style={videoStyle}
+              width="100%"
+              height="auto"
               playsInline
               disablePictureInPicture
-              controlsList="nofullscreen noremoteplayback"
             >
               <source
                 src="https://myprojectbot.com/video/sample3.mp4"
                 type="video/mp4"
               />
+              Your browser does not support the video tag.
             </video>
-
-            {/* Show custom fullscreen button only when NOT fullscreen */}
-            {!isFullscreen && (
-              <button style={fullscreenButtonStyle} onClick={this.toggleFullscreen}>
-                Fullscreen
-              </button>
-            )}
-
-            {/* Exit fullscreen button */}
-            {isFullscreen && (
-              <button
-                style={{ ...fullscreenButtonStyle, top: '20px', right: '20px' }}
-                onClick={this.toggleFullscreen}
-              >
-                Exit Fullscreen
-              </button>
-            )}
           </div>
         )}
       </div>
