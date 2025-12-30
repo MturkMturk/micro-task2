@@ -5,22 +5,15 @@ class Three extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
-    isFullscreen: false, // new state
+    isFullscreen: false,
   };
 
   videoRef = React.createRef();
-
-  // ===== CONFIG =====
-  IDLE_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes after pause/end
-
-  // ===== INTERNAL FLAGS =====
+  IDLE_TIMEOUT_MS = 2 * 60 * 1000;
   isVideoPlaying = false;
   idleTimer = null;
 
-  // ===== AUTH =====
-  handleChange = (e) => {
-    this.setState({ enteredPassword: e.target.value });
-  };
+  handleChange = (e) => this.setState({ enteredPassword: e.target.value });
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +24,6 @@ class Three extends Component {
     }
   };
 
-  // ===== LOGGING =====
   logEvent = (eventType) => {
     const v = this.videoRef.current;
     fetch('https://myprojectbot.com/api/vlog', {
@@ -46,7 +38,6 @@ class Three extends Component {
     }).catch(() => {});
   };
 
-  // ===== VIDEO HANDLERS =====
   handlePlay = () => {
     this.isVideoPlaying = true;
     clearTimeout(this.idleTimer);
@@ -106,7 +97,6 @@ class Three extends Component {
     window.removeEventListener('pagehide', this.handlePageHide);
   }
 
-  // ===== CUSTOM FULLSCREEN TOGGLE =====
   toggleFullscreen = () => {
     this.setState((prev) => ({ isFullscreen: !prev.isFullscreen }));
   };
@@ -129,6 +119,20 @@ class Three extends Component {
           height: 'auto',
         };
 
+    const fullscreenButtonStyle = {
+      position: 'absolute',
+      top: '10px',
+      right: '10px',
+      zIndex: 10000,
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '8px 12px',
+      cursor: 'pointer',
+      fontSize: '14px',
+    };
+
     return (
       <div className="App">
         {!isAuthenticated ? (
@@ -141,33 +145,37 @@ class Three extends Component {
             <button type="submit">Submit</button>
           </form>
         ) : (
-          <div>
-            <div style={{ position: 'relative' }}>
-              <video
-                ref={this.videoRef}
-                controls
-                style={videoStyle}
-                playsInline
-                disablePictureInPicture
-              >
-                <source
-                  src="https://myprojectbot.com/video/sample3.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <button
-                onClick={this.toggleFullscreen}
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  zIndex: 10000,
-                  padding: '8px 12px',
-                }}
-              >
-                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          <div style={{ position: 'relative' }}>
+            <video
+              ref={this.videoRef}
+              controls
+              style={videoStyle}
+              playsInline
+              disablePictureInPicture
+              controlsList="nofullscreen noremoteplayback"
+            >
+              <source
+                src="https://myprojectbot.com/video/sample3.mp4"
+                type="video/mp4"
+              />
+            </video>
+
+            {/* Show custom fullscreen button only when NOT fullscreen */}
+            {!isFullscreen && (
+              <button style={fullscreenButtonStyle} onClick={this.toggleFullscreen}>
+                Fullscreen
               </button>
-            </div>
+            )}
+
+            {/* Exit fullscreen button */}
+            {isFullscreen && (
+              <button
+                style={{ ...fullscreenButtonStyle, top: '20px', right: '20px' }}
+                onClick={this.toggleFullscreen}
+              >
+                Exit Fullscreen
+              </button>
+            )}
           </div>
         )}
       </div>
