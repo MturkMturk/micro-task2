@@ -102,13 +102,19 @@ class Three extends Component {
       this.videoRef.current.pause();
     }
 
-    // Hard refresh guarantees password screen
+    // Hard refresh ensures password screen
     window.location.reload();
   };
 
-  // ===== VISIBILITY (iOS SAFE) =====
+  // ===== VISIBILITY / BACKGROUND (iOS SAFE) =====
   handleVisibilityChange = () => {
     if (document.hidden && this.state.isAuthenticated) {
+      this.lockSession();
+    }
+  };
+
+  handlePageHide = () => {
+    if (this.state.isAuthenticated) {
       this.lockSession();
     }
   };
@@ -116,6 +122,7 @@ class Three extends Component {
   // ===== LIFECYCLE =====
   componentDidMount() {
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    window.addEventListener('pagehide', this.handlePageHide);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -136,6 +143,7 @@ class Three extends Component {
   componentWillUnmount() {
     clearTimeout(this.idleTimer);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('pagehide', this.handlePageHide);
 
     const video = this.videoRef.current;
     if (video) {
@@ -173,6 +181,8 @@ class Three extends Component {
               controls
               width="100%"
               height="auto"
+              playsInline
+              disablePictureInPicture
             >
               <source
                 src="https://myprojectbot.com/video/sample3.mp4"
