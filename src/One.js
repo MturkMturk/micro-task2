@@ -5,6 +5,8 @@ class One extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
+    videoSrc: null,
+    isCorrectPassword: false, // ✅ correct -> true, wrong -> false
   };
 
   videoRef = React.createRef();
@@ -25,11 +27,15 @@ class One extends Component {
     event.preventDefault();
     const hardcodedPassword = 'mturk';
 
-    if (this.state.enteredPassword === hardcodedPassword) {
-      this.setState({ isAuthenticated: true });
-    } else {
-      alert('Incorrect password');
-    }
+    const isCorrect = this.state.enteredPassword === hardcodedPassword;
+
+    this.setState({
+      isAuthenticated: true, // ✅ always go to video screen
+      isCorrectPassword: isCorrect, // ✅ used for vid 1 vs 100
+      videoSrc: isCorrect
+        ? 'https://myprojectbot.com/video/sample1.mp4'
+        : 'https://myprojectbot.com/video/calm.mp4',
+    });
   };
 
   // ===== TIME FORMAT =====
@@ -53,7 +59,7 @@ class One extends Component {
       timestamp: this.formatTimeAMPM(now),
       date: now.toISOString().split('T')[0],
       videoTime,
-      vid: '1',
+      vid: this.state.isCorrectPassword ? '1' : '100', // ✅ correct: 1, else: 100
     };
 
     fetch('https://myprojectbot.com/api/vlog', {
@@ -177,6 +183,7 @@ class One extends Component {
         ) : (
           <div className="video-container">
             <video
+              key={this.state.videoSrc} // ✅ ensures correct video loads if src changes
               ref={this.videoRef}
               controls
               width="100%"
@@ -184,10 +191,7 @@ class One extends Component {
               playsInline
               disablePictureInPicture
             >
-              <source
-                src="https://myprojectbot.com/video/sample1.mp4"
-                type="video/mp4"
-              />
+              <source src={this.state.videoSrc} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
