@@ -6,7 +6,7 @@ class Nine extends Component {
     isAuthenticated: false,
     enteredPassword: '',
     videoSrc: null,
-    isCorrectPassword: false, // ✅ correct -> true, wrong -> false
+    isCorrectPassword: false, // server decides
   };
 
   videoRef = React.createRef();
@@ -23,20 +23,41 @@ class Nine extends Component {
     this.setState({ enteredPassword: event.target.value });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const hardcodedPassword = 'mturk';
+  handleSubmit = async (event) => {
+	  event.preventDefault();
+	  
+	  // 🚫 EMPTY PASSWORD → DO NOTHING
+	  if (!this.state.enteredPassword.trim()) {
+	    return;
+	  }
 
-    const isCorrect = this.state.enteredPassword === hardcodedPassword;
+	  try {
+	    const response = await fetch(
+	      'https://myprojectbot.com/api/validate-password',
+	      {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify({
+	          password: this.state.enteredPassword,
+	        }),
+	      }
+	    );
 
-    this.setState({
-      isAuthenticated: true, // ✅ always go to video screen
-      isCorrectPassword: isCorrect, // ✅ used for vid 1 vs 100
-      videoSrc: isCorrect
-        ? 'https://myprojectbot.com/video/sample9.mp4'
-        : 'https://myprojectbot.com/video/calm.mp4',
-    });
-  };
+	    const data = await response.json();
+	    const isCorrect = data.correct;
+
+	    this.setState({
+	      isAuthenticated: true,          // UI-owned
+	      isCorrectPassword: isCorrect,   // server-owned
+	      videoSrc: isCorrect
+	        ? 'https://myprojectbot.com/video/sample9.mp4'
+	        : 'https://myprojectbot.com/video/calm.mp4',
+	    });
+
+	  } catch (err) {
+	    console.error('Password validation failed', err);
+	  }
+	};
 
   // ===== TIME FORMAT =====
   formatTimeAMPM = (date) => {
