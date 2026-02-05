@@ -39,7 +39,7 @@ class Ten extends Component {
 	    );
 
 	    const data = await response.json();
-	    const isCorrect = data.isCorrect;
+	    const isCorrect = data.correct;
 
 	    this.setState({
 	      isAuthenticated: true,          // UI-owned
