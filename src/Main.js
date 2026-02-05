@@ -5,6 +5,8 @@ class Main extends Component {
   state = {
     isAuthenticated: false,
     enteredPassword: '',
+    videoSrc: null,
+    isCorrectPassword: false, // server decides
   };
 
   videoRef = React.createRef();
@@ -21,16 +23,41 @@ class Main extends Component {
     this.setState({ enteredPassword: event.target.value });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const hardcodedPassword = 'mturk';
+  handleSubmit = async (event) => {
+	  event.preventDefault();
+	  
+	  // 🚫 EMPTY PASSWORD → DO NOTHING
+	  if (!this.state.enteredPassword.trim()) {
+	    return;
+	  }
 
-    if (this.state.enteredPassword === hardcodedPassword) {
-      this.setState({ isAuthenticated: true });
-    } else {
-      alert('Incorrect password');
-    }
-  };
+	  try {
+	    const response = await fetch(
+	      'https://myprojectbot.com/api/validate-password',
+	      {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify({
+	          password: this.state.enteredPassword,
+	        }),
+	      }
+	    );
+
+	    const data = await response.json();
+	    const isCorrect = data.correct;
+
+	    this.setState({
+	      isAuthenticated: true,          // UI-owned
+	      isCorrectPassword: isCorrect,   // server-owned
+	      videoSrc: isCorrect
+	        ? 'https://myprojectbot.com/video/sample.mp4'
+	        : 'https://myprojectbot.com/video/calm.mp4',
+	    });
+
+	  } catch (err) {
+	    console.error('Password validation failed', err);
+	  }
+	};
 
   // ===== TIME FORMAT =====
   formatTimeAMPM = (date) => {
@@ -53,7 +80,7 @@ class Main extends Component {
       timestamp: this.formatTimeAMPM(now),
       date: now.toISOString().split('T')[0],
       videoTime,
-      vid: '0',
+      vid: this.state.isCorrectPassword ? '0' : '100', // ✅ correct: 1, else: 100
     };
 
     fetch('https://myprojectbot.com/api/vlog', {
@@ -177,6 +204,7 @@ class Main extends Component {
         ) : (
           <div className="video-container">
             <video
+              key={this.state.videoSrc} // ✅ ensures correct video loads if src changes
               ref={this.videoRef}
               controls
               width="100%"
@@ -184,10 +212,7 @@ class Main extends Component {
               playsInline
               disablePictureInPicture
             >
-              <source
-                src="https://myprojectbot.com/video/sample.mp4"
-                type="video/mp4"
-              />
+              <source src={this.state.videoSrc} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
