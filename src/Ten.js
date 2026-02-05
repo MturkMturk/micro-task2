@@ -25,6 +25,11 @@ class Ten extends Component {
 
   handleSubmit = async (event) => {
 	  event.preventDefault();
+	  
+	  // 🚫 EMPTY PASSWORD → DO NOTHING
+	  if (!this.state.enteredPassword.trim()) {
+	    return;
+	  }
 
 	  try {
 	    const response = await fetch(
